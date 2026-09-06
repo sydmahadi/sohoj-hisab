@@ -73,7 +73,7 @@ class CalculatorLogic {
       return 'সঠিক সংখ্যা ইনপুট দিন';
     }
 
-    const double averageMonthDays = 30.4375;
+    const double averageMonthDays = 30.0;
 
     final double dailyAverage = value / days;
 
