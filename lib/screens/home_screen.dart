@@ -14,6 +14,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text(
           'সহজ হিসাব',
           style: TextStyle(
@@ -25,24 +26,30 @@ class HomeScreen extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
+
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
 
+              // =========================
               // Header
+              // =========================
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(24),
+
                 decoration: BoxDecoration(
                   color: AppTheme.primary,
                   borderRadius: BorderRadius.circular(24),
                 ),
 
                 child: const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+
                     Text(
                       'بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 17,
@@ -53,6 +60,7 @@ class HomeScreen extends StatelessWidget {
 
                     Text(
                       'সহজে হিসাব করুন',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 25,
@@ -64,6 +72,7 @@ class HomeScreen extends StatelessWidget {
 
                     Text(
                       'দৈনিক, মাসিক ও সাধারণ হিসাব এক জায়গায়',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white70,
                         fontSize: 14,
@@ -75,8 +84,12 @@ class HomeScreen extends StatelessWidget {
 
               const SizedBox(height: 25),
 
+              // =========================
+              // Section Title
+              // =========================
               const Text(
                 'হিসাবের ধরন',
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -86,7 +99,9 @@ class HomeScreen extends StatelessWidget {
 
               const SizedBox(height: 14),
 
+              // =========================
               // ১. তারিখ হিসাব
+              // =========================
               _MenuCard(
                 icon: Icons.event_available_rounded,
                 title: 'তারিখ হিসাব',
@@ -95,7 +110,8 @@ class HomeScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const DateCalculatorScreen(),
+                      builder: (_) =>
+                          const DateCalculatorScreen(),
                     ),
                   );
                 },
@@ -103,7 +119,9 @@ class HomeScreen extends StatelessWidget {
 
               const SizedBox(height: 12),
 
+              // =========================
               // ২. সাধারণ ক্যালকুলেটর
+              // =========================
               _MenuCard(
                 icon: Icons.calculate_rounded,
                 title: 'সাধারণ ক্যালকুলেটর',
@@ -112,7 +130,8 @@ class HomeScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const CalculatorScreen(),
+                      builder: (_) =>
+                          const CalculatorScreen(),
                     ),
                   );
                 },
@@ -120,7 +139,9 @@ class HomeScreen extends StatelessWidget {
 
               const SizedBox(height: 12),
 
+              // =========================
               // ৩. দৈনিক গড়
+              // =========================
               _MenuCard(
                 icon: Icons.today_rounded,
                 title: 'দৈনিক গড়',
@@ -129,7 +150,8 @@ class HomeScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const DailyAverageScreen(),
+                      builder: (_) =>
+                          const DailyAverageScreen(),
                     ),
                   );
                 },
@@ -137,7 +159,9 @@ class HomeScreen extends StatelessWidget {
 
               const SizedBox(height: 12),
 
+              // =========================
               // ৪. মাসিক গড়
+              // =========================
               _MenuCard(
                 icon: Icons.calendar_month_rounded,
                 title: 'মাসিক গড়',
@@ -146,7 +170,8 @@ class HomeScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const MonthlyAverageScreen(),
+                      builder: (_) =>
+                          const MonthlyAverageScreen(),
                     ),
                   );
                 },
@@ -154,7 +179,9 @@ class HomeScreen extends StatelessWidget {
 
               const SizedBox(height: 12),
 
-              // ৫. ব্রাউজার - সবার শেষে
+              // =========================
+              // ৫. ব্রাউজার
+              // =========================
               _MenuCard(
                 icon: Icons.language_rounded,
                 title: 'ব্রাউজার',
@@ -163,11 +190,31 @@ class HomeScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const BrowserScreen(),
+                      builder: (_) =>
+                          const BrowserScreen(),
                     ),
                   );
                 },
               ),
+
+              const SizedBox(height: 28),
+
+              // =========================
+              // Developer
+              // =========================
+              const Center(
+                child: Text(
+                  'Developed by Talpatar Sepai',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppTheme.textMuted,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 15),
             ],
           ),
         ),
@@ -175,6 +222,10 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
+
+// =====================================================
+// Menu Card
+// =====================================================
 
 class _MenuCard extends StatelessWidget {
   final IconData icon;
@@ -204,6 +255,8 @@ class _MenuCard extends StatelessWidget {
 
           child: Row(
             children: [
+
+              // Icon
               Container(
                 width: 52,
                 height: 52,
@@ -224,6 +277,7 @@ class _MenuCard extends StatelessWidget {
 
               const SizedBox(width: 16),
 
+              // Text
               Expanded(
                 child: Column(
                   crossAxisAlignment:
@@ -251,6 +305,9 @@ class _MenuCard extends StatelessWidget {
                 ),
               ),
 
+              const SizedBox(width: 8),
+
+              // Arrow
               const Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: 17,
