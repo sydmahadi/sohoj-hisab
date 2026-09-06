@@ -103,7 +103,7 @@ class _MonthlyAverageScreenState
                   Expanded(
                     child: Text(
                       'আপনার দেওয়া দিনের হিসাব থেকে '
-                      '৩০.৪৩ দিনের আনুমানিক মাসিক হিসাব করা হবে।',
+                      '৩০ দিনের আনুমানিক মাসিক হিসাব করা হবে।',
                       style: TextStyle(
                         color: AppTheme.textDark,
                         fontSize: 13,
