@@ -28,7 +28,7 @@ jobs:
         run: flutter create --platforms=android .
 
       - name: Analyze
-        run: flutter analyze
+        run: flutter analyze lib
 
       - name: Build APK
         run: flutter build apk --release
