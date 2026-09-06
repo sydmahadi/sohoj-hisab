@@ -59,8 +59,7 @@ class CalculatorLogic {
 
   /// মাসিক গড় - সংখ্যা
   ///
-  /// নির্দিষ্ট কয়েক দিনের মোট value থেকে
-  /// ৩০.৪৩ দিনের আনুমানিক মাসিক হিসাব।
+  /// মাসকে নির্দিষ্টভাবে ৩০ দিন ধরা হয়েছে।
   static String monthlyCount({
     required double days,
     required double value,
@@ -73,17 +72,18 @@ class CalculatorLogic {
       return 'সঠিক সংখ্যা ইনপুট দিন';
     }
 
-    const double averageMonthDays = 30.0;
+    const double monthDays = 30.0;
 
     final double dailyAverage = value / days;
-
     final double monthlyAverage =
-        dailyAverage * averageMonthDays;
+        dailyAverage * monthDays;
 
     return monthlyAverage.toStringAsFixed(2);
   }
 
   /// মাসিক গড় - সময়
+  ///
+  /// মাসকে নির্দিষ্টভাবে ৩০ দিন ধরা হয়েছে।
   static String monthlyTime({
     required double days,
     required double totalMinutes,
@@ -96,14 +96,16 @@ class CalculatorLogic {
       return 'সঠিক সময় ইনপুট দিন';
     }
 
-    const double averageMonthDays = 30.4375;
+    const double monthDays = 30.0;
 
     final double dailyAverage =
         totalMinutes / days;
 
     final double monthlyAverage =
-        dailyAverage * averageMonthDays;
+        dailyAverage * monthDays;
 
-    return formatHoursAndMinutes(monthlyAverage);
+    return formatHoursAndMinutes(
+      monthlyAverage,
+    );
   }
 }
