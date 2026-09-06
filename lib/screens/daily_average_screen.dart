@@ -14,7 +14,6 @@ class DailyAverageScreen extends StatefulWidget {
 
 class _DailyAverageScreenState
     extends State<DailyAverageScreen> {
-
   final daysController = TextEditingController();
   final valueController = TextEditingController();
 
@@ -32,12 +31,12 @@ class _DailyAverageScreenState
 
   void calculate() {
     final double? days =
-        double.tryParse(daysController.text);
+        double.tryParse(daysController.text.trim());
 
     final double? value =
-        double.tryParse(valueController.text);
+        double.tryParse(valueController.text.trim());
 
-    if (days == null || value == null) {
+    if (days == null || value == null || days <= 0 || value < 0) {
       setState(() {
         result = 'সব তথ্য সঠিকভাবে পূরণ করুন';
       });
@@ -54,15 +53,14 @@ class _DailyAverageScreenState
         result = '$answer বার';
       });
     } else {
-      final double minutes =
+      final double totalMinutes =
           timeUnit == TimeUnit.hours
               ? value * 60
               : value;
 
-      final answer =
-          CalculatorLogic.dailyTimeInMinutes(
+      final answer = CalculatorLogic.dailyTimeInMinutes(
         days: days,
-        totalMinutes: minutes,
+        totalMinutes: totalMinutes,
       );
 
       setState(() {
@@ -82,7 +80,40 @@ class _DailyAverageScreenState
         padding: const EdgeInsets.all(20),
 
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+
+            Container(
+              padding: const EdgeInsets.all(16),
+
+              decoration: BoxDecoration(
+                color: AppTheme.gold.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(18),
+              ),
+
+              child: const Row(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    color: AppTheme.gold,
+                  ),
+
+                  SizedBox(width: 10),
+
+                  Expanded(
+                    child: Text(
+                      'আপনার মোট হিসাবকে দিনের সংখ্যা দিয়ে ভাগ করে দৈনিক গড় বের করা হবে।',
+                      style: TextStyle(
+                        color: AppTheme.textDark,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
 
             SegmentedButton<AverageType>(
               segments: const [
@@ -110,11 +141,20 @@ class _DailyAverageScreenState
 
             const SizedBox(height: 25),
 
-            _InputField(
+            TextField(
               controller: daysController,
-              label: 'কয় দিনের হিসাব?',
-              hint: 'যেমন: ১৫',
-              icon: Icons.calendar_today,
+              keyboardType:
+                  const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+
+              decoration: const InputDecoration(
+                labelText: 'কয় দিনের হিসাব?',
+                hintText: 'যেমন: ৫',
+                prefixIcon: Icon(
+                  Icons.calendar_today,
+                ),
+              ),
             ),
 
             const SizedBox(height: 15),
@@ -143,6 +183,7 @@ class _DailyAverageScreenState
                   if (value != null) {
                     setState(() {
                       timeUnit = value;
+                      result = '';
                     });
                   }
                 },
@@ -151,28 +192,40 @@ class _DailyAverageScreenState
             if (type == AverageType.time)
               const SizedBox(height: 15),
 
-            _InputField(
+            TextField(
               controller: valueController,
-              label: type == AverageType.count
-                  ? 'মোট সংখ্যা'
-                  : 'মোট সময়',
 
-              hint: type == AverageType.count
-                  ? 'যেমন: ৪৫'
-                  : 'যেমন: ৩০',
+              keyboardType:
+                  const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
 
-              icon: type == AverageType.count
-                  ? Icons.numbers
-                  : Icons.timer,
+              decoration: InputDecoration(
+                labelText: type == AverageType.count
+                    ? 'মোট সংখ্যা'
+                    : 'মোট সময়',
+
+                hintText: type == AverageType.count
+                    ? 'যেমন: ৪৫'
+                    : 'যেমন: ২০০',
+
+                prefixIcon: Icon(
+                  type == AverageType.count
+                      ? Icons.numbers
+                      : Icons.timer,
+                ),
+              ),
             ),
 
             const SizedBox(height: 25),
 
             ElevatedButton.icon(
               onPressed: calculate,
+
               icon: const Icon(Icons.calculate),
+
               label: const Text(
-                'হিসাব করুন',
+                'দৈনিক হিসাব করুন',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -183,88 +236,42 @@ class _DailyAverageScreenState
             const SizedBox(height: 25),
 
             if (result.isNotEmpty)
-              _ResultCard(
-                title: 'দৈনিক গড়',
-                value: result,
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(24),
+
+                decoration: BoxDecoration(
+                  color: AppTheme.primary,
+                  borderRadius: BorderRadius.circular(22),
+                ),
+
+                child: Column(
+                  children: [
+                    const Text(
+                      'দৈনিক গড়',
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 15,
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    Text(
+                      result,
+                      textAlign: TextAlign.center,
+
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 27,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
               ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _InputField extends StatelessWidget {
-  final TextEditingController controller;
-  final String label;
-  final String hint;
-  final IconData icon;
-
-  const _InputField({
-    required this.controller,
-    required this.label,
-    required this.hint,
-    required this.icon,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      keyboardType: const TextInputType.numberWithOptions(
-        decimal: true,
-      ),
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        prefixIcon: Icon(icon),
-      ),
-    );
-  }
-}
-
-class _ResultCard extends StatelessWidget {
-  final String title;
-  final String value;
-
-  const _ResultCard({
-    required this.title,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(22),
-
-      decoration: BoxDecoration(
-        color: AppTheme.primary,
-        borderRadius: BorderRadius.circular(22),
-      ),
-
-      child: Column(
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              color: Colors.white70,
-              fontSize: 15,
-            ),
-          ),
-
-          const SizedBox(height: 8),
-
-          Text(
-            value,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
       ),
     );
   }
