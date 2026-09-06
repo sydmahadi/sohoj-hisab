@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
+import 'date_calculator_screen.dart';
 import 'calculator_screen.dart';
 import 'daily_average_screen.dart';
 import 'monthly_average_screen.dart';
@@ -24,7 +25,6 @@ class HomeScreen extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
-
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -33,7 +33,6 @@ class HomeScreen extends StatelessWidget {
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(24),
-
                 decoration: BoxDecoration(
                   color: AppTheme.primary,
                   borderRadius: BorderRadius.circular(24),
@@ -87,7 +86,24 @@ class HomeScreen extends StatelessWidget {
 
               const SizedBox(height: 14),
 
-              // সাধারণ ক্যালকুলেটর
+              // ১. তারিখ হিসাব
+              _MenuCard(
+                icon: Icons.event_available_rounded,
+                title: 'তারিখ হিসাব',
+                subtitle: 'কত দিন আগে কোন তারিখ ছিল জানুন',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const DateCalculatorScreen(),
+                    ),
+                  );
+                },
+              ),
+
+              const SizedBox(height: 12),
+
+              // ২. সাধারণ ক্যালকুলেটর
               _MenuCard(
                 icon: Icons.calculate_rounded,
                 title: 'সাধারণ ক্যালকুলেটর',
@@ -104,7 +120,7 @@ class HomeScreen extends StatelessWidget {
 
               const SizedBox(height: 12),
 
-              // দৈনিক
+              // ৩. দৈনিক গড়
               _MenuCard(
                 icon: Icons.today_rounded,
                 title: 'দৈনিক গড়',
@@ -113,8 +129,7 @@ class HomeScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) =>
-                          const DailyAverageScreen(),
+                      builder: (_) => const DailyAverageScreen(),
                     ),
                   );
                 },
@@ -122,7 +137,7 @@ class HomeScreen extends StatelessWidget {
 
               const SizedBox(height: 12),
 
-              // মাসিক
+              // ৪. মাসিক গড়
               _MenuCard(
                 icon: Icons.calendar_month_rounded,
                 title: 'মাসিক গড়',
@@ -131,8 +146,7 @@ class HomeScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) =>
-                          const MonthlyAverageScreen(),
+                      builder: (_) => const MonthlyAverageScreen(),
                     ),
                   );
                 },
@@ -140,7 +154,7 @@ class HomeScreen extends StatelessWidget {
 
               const SizedBox(height: 12),
 
-              // Browser
+              // ৫. ব্রাউজার - সবার শেষে
               _MenuCard(
                 icon: Icons.language_rounded,
                 title: 'ব্রাউজার',
@@ -214,7 +228,6 @@ class _MenuCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment:
                       CrossAxisAlignment.start,
-
                   children: [
                     Text(
                       title,
