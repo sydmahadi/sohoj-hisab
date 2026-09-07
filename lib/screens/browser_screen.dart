@@ -30,6 +30,8 @@ class _BrowserScreenState extends State<BrowserScreen> {
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageStarted: (String url) {
+            if (!mounted) return;
+
             setState(() {
               isLoading = true;
               loadingProgress = 0;
@@ -38,12 +40,16 @@ class _BrowserScreenState extends State<BrowserScreen> {
           },
 
           onProgress: (int progress) {
+            if (!mounted) return;
+
             setState(() {
               loadingProgress = progress;
             });
           },
 
           onPageFinished: (String url) {
+            if (!mounted) return;
+
             setState(() {
               isLoading = false;
               loadingProgress = 100;
@@ -52,6 +58,8 @@ class _BrowserScreenState extends State<BrowserScreen> {
           },
 
           onWebResourceError: (WebResourceError error) {
+            if (!mounted) return;
+
             setState(() {
               isLoading = false;
             });
@@ -84,19 +92,26 @@ class _BrowserScreenState extends State<BrowserScreen> {
     );
   }
 
-  Future<bool> handleBack() async {
+  Future<void> handleBack() async {
     if (await controller.canGoBack()) {
       await controller.goBack();
-      return false;
+    } else {
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
     }
-
-    return true;
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: handleBack,
+    return PopScope(
+      canPop: false,
+
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+
+        handleBack();
+      },
 
       child: Scaffold(
         appBar: AppBar(
