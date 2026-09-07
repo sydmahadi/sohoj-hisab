@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+
   pull_request:
     branches:
       - main
@@ -28,6 +29,18 @@ jobs:
         run: |
           rm -rf android
           flutter create --platforms=android .
+
+      - name: Add Internet Permission
+        run: |
+          if ! grep -q "android.permission.INTERNET" android/app/src/main/AndroidManifest.xml; then
+            sed -i '/<manifest/a\    <uses-permission android:name="android.permission.INTERNET"/>' \
+              android/app/src/main/AndroidManifest.xml
+          fi
+
+      - name: Verify Internet Permission
+        run: |
+          grep -n "android.permission.INTERNET" \
+            android/app/src/main/AndroidManifest.xml
 
       - name: Analyze
         run: flutter analyze lib
