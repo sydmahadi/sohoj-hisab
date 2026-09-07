@@ -30,12 +30,32 @@ jobs:
           rm -rf android
           flutter create --platforms=android .
 
+      - name: Set App Name
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p = Path("android/app/src/main/AndroidManifest.xml")
+          s = p.read_text()
+
+          s = s.replace(
+              'android:label="shohoj_hisab"',
+              'android:label="সহজ হিসাব"'
+          )
+
+          p.write_text(s)
+          PY
+
       - name: Add Internet Permission
         run: |
           if ! grep -q "android.permission.INTERNET" android/app/src/main/AndroidManifest.xml; then
             sed -i '/<manifest/a\    <uses-permission android:name="android.permission.INTERNET"/>' \
               android/app/src/main/AndroidManifest.xml
           fi
+
+      - name: Generate App Icon
+        run: |
+          dart run flutter_launcher_icons
 
       - name: Analyze
         run: flutter analyze lib --no-fatal-infos
