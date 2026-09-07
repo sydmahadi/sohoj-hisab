@@ -40,9 +40,9 @@ class HomeScreen extends StatelessWidget {
           SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(
-                18,
-                18,
-                18,
+                16,
+                16,
+                16,
                 25,
               ),
               child: Column(
@@ -52,11 +52,8 @@ class HomeScreen extends StatelessWidget {
                   // ==================================
                   const _HeaderCard(),
 
-                  const SizedBox(height: 28),
+                  const SizedBox(height: 25),
 
-                  // ==================================
-                  // Section Title
-                  // ==================================
                   const Text(
                     'হিসাবের ধরন',
                     textAlign: TextAlign.center,
@@ -70,7 +67,7 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(height: 5),
 
                   const Text(
-                    'আপনার প্রয়োজনীয় হিসাব নির্বাচন করুন',
+                    'প্রয়োজনীয় হিসাব নির্বাচন করুন',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: AppTheme.textMuted,
@@ -78,130 +75,111 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 17),
 
                   // ==================================
-                  // 01 Calculator
+                  // 3 Column Grid
                   // ==================================
-                  _MenuCard(
-                    number: '01',
-                    icon: Icons.calculate_rounded,
-                    title: 'সাধারণ ক্যালকুলেটর',
-                    subtitle: 'যোগ, বিয়োগ, গুণ ও ভাগ',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              const CalculatorScreen(),
-                        ),
-                      );
-                    },
-                  ),
+                  GridView.count(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    shrinkWrap: true,
+                    physics:
+                        const NeverScrollableScrollPhysics(),
+                    childAspectRatio: 0.82,
 
-                  const SizedBox(height: 12),
+                    children: [
+                      // 1. সাধারণ ক্যালকুলেটর
+                      _MenuCard(
+                        icon: Icons.calculate_rounded,
+                        title: 'সাধারণ\nক্যালকুলেটর',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  const CalculatorScreen(),
+                            ),
+                          );
+                        },
+                      ),
 
-                  // ==================================
-                  // 02 Date
-                  // ==================================
-                  _MenuCard(
-                    number: '02',
-                    icon: Icons.event_available_rounded,
-                    title: 'তারিখ হিসাব',
-                    subtitle: 'কত দিন আগে কোন তারিখ ছিল জানুন',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              const DateCalculatorScreen(),
-                        ),
-                      );
-                    },
-                  ),
+                      // 2. তারিখ হিসাব
+                      _MenuCard(
+                        icon: Icons.event_available_rounded,
+                        title: 'তারিখ\nহিসাব',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  const DateCalculatorScreen(),
+                            ),
+                          );
+                        },
+                      ),
 
-                  const SizedBox(height: 12),
+                      // 3. সময় যোগ
+                      _MenuCard(
+                        icon: Icons.access_time_rounded,
+                        title: 'সময় যোগ',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  const TimeSumScreen(),
+                            ),
+                          );
+                        },
+                      ),
 
-                  // ==================================
-                  // 03 Time Sum
-                  // ==================================
-                  _MenuCard(
-                    number: '03',
-                    icon: Icons.access_time_rounded,
-                    title: 'সময় যোগ',
-                    subtitle: '১.৩০, ২.৫০ এভাবে সময় যোগ করুন',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              const TimeSumScreen(),
-                        ),
-                      );
-                    },
-                  ),
+                      // 4. দৈনিক গড়
+                      _MenuCard(
+                        icon: Icons.today_rounded,
+                        title: 'দৈনিক গড়',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  const DailyAverageScreen(),
+                            ),
+                          );
+                        },
+                      ),
 
-                  const SizedBox(height: 12),
+                      // 5. মাসিক গড়
+                      _MenuCard(
+                        icon: Icons.calendar_month_rounded,
+                        title: 'মাসিক গড়',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  const MonthlyAverageScreen(),
+                            ),
+                          );
+                        },
+                      ),
 
-                  // ==================================
-                  // 04 Daily Average
-                  // ==================================
-                  _MenuCard(
-                    number: '04',
-                    icon: Icons.today_rounded,
-                    title: 'দৈনিক গড়',
-                    subtitle: 'সময় অথবা সংখ্যার দৈনিক গড়',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              const DailyAverageScreen(),
-                        ),
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  // ==================================
-                  // 05 Monthly Average
-                  // ==================================
-                  _MenuCard(
-                    number: '05',
-                    icon: Icons.calendar_month_rounded,
-                    title: 'মাসিক গড়',
-                    subtitle: 'কয়েক দিনের হিসাব থেকে মাসিক হিসাব',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              const MonthlyAverageScreen(),
-                        ),
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  // ==================================
-                  // 06 Browser
-                  // ==================================
-                  _MenuCard(
-                    number: '06',
-                    icon: Icons.language_rounded,
-                    title: 'ব্রাউজার',
-                    subtitle: 'অ্যাপের ভিতর থেকেই ওয়েব ব্রাউজ করুন',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              const BrowserScreen(),
-                        ),
-                      );
-                    },
+                      // 6. ব্রাউজার
+                      _MenuCard(
+                        icon: Icons.language_rounded,
+                        title: 'ব্রাউজার',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  const BrowserScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
 
                   const SizedBox(height: 30),
@@ -214,6 +192,7 @@ class HomeScreen extends StatelessWidget {
                         MainAxisAlignment.center,
                     children: [
                       _ornamentLine(),
+
                       const SizedBox(width: 12),
 
                       const Icon(
@@ -223,21 +202,41 @@ class HomeScreen extends StatelessWidget {
                       ),
 
                       const SizedBox(width: 12),
+
                       _ornamentLine(),
                     ],
                   ),
 
                   const SizedBox(height: 13),
 
-                  const Text(
-                    'Developed by Talpatar Sepai',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: AppTheme.textMuted,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 0.4,
-                    ),
+                  // ==================================
+                  // Developer Information
+                  // ==================================
+                  const Column(
+                    children: [
+                      Text(
+                        'Developed by Talpatar Sepai',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: AppTheme.textMuted,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+
+                      SizedBox(height: 5),
+
+                      Text(
+                        'm.talpatarsepai@gmail.com',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: AppTheme.gold,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
 
                   const SizedBox(height: 15),
@@ -250,6 +249,9 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  // ================================================
+  // Gold Ornament Line
+  // ================================================
   static Widget _ornamentLine() {
     return Container(
       width: 45,
@@ -273,11 +275,12 @@ class _HeaderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
+
       padding: const EdgeInsets.fromLTRB(
+        18,
+        23,
+        18,
         22,
-        25,
-        22,
-        24,
       ),
 
       decoration: BoxDecoration(
@@ -296,7 +299,6 @@ class _HeaderCard extends StatelessWidget {
           color: AppTheme.gold.withValues(
             alpha: 0.28,
           ),
-          width: 1,
         ),
 
         boxShadow: [
@@ -312,36 +314,36 @@ class _HeaderCard extends StatelessWidget {
 
       child: Column(
         children: [
-          // Top Ornament
+          // Top Islamic Ornament
           Row(
             mainAxisAlignment:
                 MainAxisAlignment.center,
             children: [
               _diamond(),
 
-              const SizedBox(width: 12),
+              const SizedBox(width: 10),
 
               _line(),
 
-              const SizedBox(width: 12),
+              const SizedBox(width: 10),
 
               const Icon(
                 Icons.star_rounded,
                 color: AppTheme.gold,
-                size: 18,
+                size: 17,
               ),
 
-              const SizedBox(width: 12),
+              const SizedBox(width: 10),
 
               _line(),
 
-              const SizedBox(width: 12),
+              const SizedBox(width: 10),
 
               _diamond(),
             ],
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 18),
 
           // Bismillah
           const Text(
@@ -349,12 +351,11 @@ class _HeaderCard extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppTheme.goldLight,
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
+              fontSize: 17,
             ),
           ),
 
-          const SizedBox(height: 15),
+          const SizedBox(height: 13),
 
           // App Name
           const Text(
@@ -362,52 +363,62 @@ class _HeaderCard extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white,
-              fontSize: 30,
+              fontSize: 29,
               fontWeight: FontWeight.bold,
-              letterSpacing: 0.5,
-            ),
-          ),
-
-          const SizedBox(height: 7),
-
-          const Text(
-            'সহজে হিসাব করুন',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: AppTheme.goldLight,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
             ),
           ),
 
           const SizedBox(height: 6),
 
           const Text(
+            'সহজে হিসাব করুন',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: AppTheme.goldLight,
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+
+          const SizedBox(height: 5),
+
+          const Text(
             'দৈনিক, মাসিক ও সাধারণ হিসাব এক জায়গায়',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppTheme.textMuted,
-              fontSize: 13,
+              fontSize: 12,
             ),
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 17),
 
           // Bottom Ornament
           Row(
             mainAxisAlignment:
                 MainAxisAlignment.center,
-            children: [
-              _dot(),
-              const SizedBox(width: 8),
-              _dot(),
-              const SizedBox(width: 8),
-              _dot(),
-              const SizedBox(width: 8),
-              _dot(),
-              const SizedBox(width: 8),
-              _dot(),
-            ],
+            children: List.generate(
+              5,
+              (index) {
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(
+                    horizontal: 4,
+                  ),
+                  child: Container(
+                    width: 5,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color:
+                          AppTheme.gold.withValues(
+                        alpha: 0.7,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),
@@ -416,10 +427,10 @@ class _HeaderCard extends StatelessWidget {
 
   static Widget _line() {
     return Container(
-      width: 65,
+      width: 55,
       height: 1,
       color: AppTheme.gold.withValues(
-        alpha: 0.45,
+        alpha: 0.4,
       ),
     );
   }
@@ -433,21 +444,7 @@ class _HeaderCard extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(
             color: AppTheme.gold,
-            width: 1,
           ),
-        ),
-      ),
-    );
-  }
-
-  static Widget _dot() {
-    return Container(
-      width: 6,
-      height: 6,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: AppTheme.gold.withValues(
-          alpha: 0.75,
         ),
       ),
     );
@@ -456,21 +453,17 @@ class _HeaderCard extends StatelessWidget {
 
 
 // =====================================================
-// PREMIUM MENU CARD
+// GRID MENU CARD
 // =====================================================
 
 class _MenuCard extends StatelessWidget {
-  final String number;
   final IconData icon;
   final String title;
-  final String subtitle;
   final VoidCallback onTap;
 
   const _MenuCard({
-    required this.number,
     required this.icon,
     required this.title,
-    required this.subtitle,
     required this.onTap,
   });
 
@@ -480,88 +473,65 @@ class _MenuCard extends StatelessWidget {
       color: Colors.transparent,
 
       child: InkWell(
-        borderRadius: BorderRadius.circular(21),
         onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
 
         child: Container(
-          padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 7,
+            vertical: 14,
+          ),
 
           decoration: BoxDecoration(
             color: AppTheme.card,
 
             borderRadius:
-                BorderRadius.circular(21),
+                BorderRadius.circular(20),
 
             border: Border.all(
               color: AppTheme.gold.withValues(
-                alpha: 0.14,
+                alpha: 0.17,
               ),
-              width: 1,
             ),
 
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(
-                  alpha: 0.30,
+                  alpha: 0.28,
                 ),
-                blurRadius: 14,
-                offset: const Offset(0, 6),
+                blurRadius: 12,
+                offset: const Offset(0, 5),
               ),
             ],
           ),
 
-          child: Row(
+          child: Column(
+            mainAxisAlignment:
+                MainAxisAlignment.center,
             children: [
-              // Number
-              Container(
-                width: 38,
-                height: 38,
-                alignment: Alignment.center,
-
-                decoration: BoxDecoration(
-                  color: AppTheme.gold.withValues(
-                    alpha: 0.08,
-                  ),
-                  borderRadius:
-                      BorderRadius.circular(12),
-                  border: Border.all(
-                    color: AppTheme.gold.withValues(
-                      alpha: 0.20,
-                    ),
-                  ),
-                ),
-
-                child: Text(
-                  number,
-                  style: const TextStyle(
-                    color: AppTheme.gold,
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-
-              const SizedBox(width: 11),
-
               // Icon
               Container(
-                width: 53,
-                height: 53,
+                width: 55,
+                height: 55,
 
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
+                  gradient:
+                      const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                     colors: [
-                      Color(0xFF155D3C),
-                      Color(0xFF0B3927),
+                      Color(0xFF176B45),
+                      Color(0xFF0A3525),
                     ],
                   ),
 
                   borderRadius:
-                      BorderRadius.circular(16),
+                      BorderRadius.circular(17),
 
                   border: Border.all(
-                    color: AppTheme.gold.withValues(
-                      alpha: 0.18,
+                    color:
+                        AppTheme.gold.withValues(
+                      alpha: 0.22,
                     ),
                   ),
                 ),
@@ -569,64 +539,33 @@ class _MenuCard extends StatelessWidget {
                 child: Icon(
                   icon,
                   color: AppTheme.goldLight,
-                  size: 27,
+                  size: 28,
                 ),
               ),
 
-              const SizedBox(width: 14),
+              const SizedBox(height: 12),
 
-              // Text
-              Expanded(
-                child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      maxLines: 1,
-                      overflow:
-                          TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: AppTheme.textDark,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-
-                    const SizedBox(height: 5),
-
-                    Text(
-                      subtitle,
-                      maxLines: 1,
-                      overflow:
-                          TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: AppTheme.textMuted,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
+              // Title
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                style: const TextStyle(
+                  color: AppTheme.textDark,
+                  fontSize: 13,
+                  height: 1.25,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
 
-              const SizedBox(width: 7),
+              const SizedBox(height: 8),
 
-              // Arrow
+              // Small Gold Ornament
               Container(
-                width: 30,
-                height: 30,
-
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppTheme.gold.withValues(
-                    alpha: 0.07,
-                  ),
-                ),
-
-                child: const Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 13,
-                  color: AppTheme.gold,
+                width: 20,
+                height: 1,
+                color: AppTheme.gold.withValues(
+                  alpha: 0.45,
                 ),
               ),
             ],
@@ -656,7 +595,6 @@ class _IslamicBackground extends StatelessWidget {
 
 class _IslamicPatternPainter
     extends CustomPainter {
-
   @override
   void paint(
     Canvas canvas,
@@ -669,8 +607,9 @@ class _IslamicPatternPainter
         alpha: 0.045,
       );
 
-    const double spacing = 92;
+    const spacing = 90.0;
 
+    // Repeated Islamic geometric pattern
     for (
       double x = -spacing;
       x < size.width + spacing;
@@ -684,13 +623,13 @@ class _IslamicPatternPainter
         _drawStar(
           canvas,
           Offset(x, y),
-          30,
+          28,
           paint,
         );
       }
     }
 
-    // Large center ornament
+    // Large subtle center pattern
     final largePaint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1
@@ -704,7 +643,7 @@ class _IslamicPatternPainter
         size.width / 2,
         size.height / 2,
       ),
-      150,
+      145,
       largePaint,
     );
   }
@@ -715,13 +654,16 @@ class _IslamicPatternPainter
     double radius,
     Paint paint,
   ) {
-    const int points = 8;
+    const points = 8;
 
     final path = Path();
 
-    for (int i = 0; i < points * 2; i++) {
-      final angle =
-          (i * pi) / points;
+    for (
+      int i = 0;
+      i < points * 2;
+      i++
+    ) {
+      final angle = (i * pi) / points;
 
       final currentRadius =
           i.isEven
@@ -760,9 +702,12 @@ class _IslamicPatternPainter
     // Inner diamond
     final innerPath = Path();
 
-    for (int i = 0; i < 4; i++) {
-      final angle =
-          (i * pi) / 2;
+    for (
+      int i = 0;
+      i < 4;
+      i++
+    ) {
+      final angle = (i * pi) / 2;
 
       final point = Offset(
         center.dx +
