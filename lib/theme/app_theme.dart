@@ -1,29 +1,49 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  static const Color primary = Color(0xFF14532D);
-  static const Color primaryLight = Color(0xFF1F7A45);
-  static const Color background = Color(0xFFF6F8F4);
-  static const Color card = Colors.white;
-  static const Color textDark = Color(0xFF183329);
-  static const Color textMuted = Color(0xFF6B7C72);
-  static const Color gold = Color(0xFFC59D5F);
+  // Premium Islamic Dark Colors
+  static const Color primary = Color(0xFF0F5132);
+  static const Color primaryLight = Color(0xFF176B45);
+
+  static const Color background = Color(0xFF06130F);
+  static const Color backgroundSecondary = Color(0xFF0A1E17);
+
+  static const Color card = Color(0xFF0D251C);
+  static const Color cardLight = Color(0xFF123225);
+
+  static const Color gold = Color(0xFFC9A45C);
+  static const Color goldLight = Color(0xFFE4C987);
+
+  static const Color textDark = Color(0xFFF2EBDD);
+  static const Color textMuted = Color(0xFF9DAEA5);
 
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
+
       scaffoldBackgroundColor: background,
 
       colorScheme: ColorScheme.fromSeed(
         seedColor: primary,
-        brightness: Brightness.light,
+        brightness: Brightness.dark,
+      ).copyWith(
+        primary: primaryLight,
+        secondary: gold,
+        surface: card,
+        onSurface: textDark,
       ),
 
       appBarTheme: const AppBarTheme(
-        backgroundColor: primary,
-        foregroundColor: Colors.white,
+        backgroundColor: background,
+        foregroundColor: textDark,
         centerTitle: true,
         elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        titleTextStyle: TextStyle(
+          color: textDark,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
       ),
 
       cardTheme: CardThemeData(
@@ -31,42 +51,89 @@ class AppTheme {
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(22),
+          side: BorderSide(
+            color: gold,
+            width: 0.5,
+          ),
         ),
       ),
 
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: Colors.white,
+        fillColor: card,
+
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 18,
-          vertical: 16,
+          vertical: 17,
         ),
+
+        labelStyle: const TextStyle(
+          color: textMuted,
+        ),
+
+        hintStyle: const TextStyle(
+          color: Color(0xFF71837A),
+        ),
+
+        prefixIconColor: gold,
+
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide.none,
+          borderRadius: BorderRadius.circular(17),
+          borderSide: BorderSide(
+            color: gold,
+            width: 0.5,
+          ),
         ),
+
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide.none,
+          borderRadius: BorderRadius.circular(17),
+          borderSide: BorderSide(
+            color: gold,
+            width: 0.5,
+          ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(
-            color: primary,
-            width: 1.5,
+
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(17),
+          ),
+          borderSide: BorderSide(
+            color: gold,
+            width: 1.4,
           ),
         ),
       ),
 
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: primary,
+          backgroundColor: primaryLight,
           foregroundColor: Colors.white,
-          minimumSize: const Size(double.infinity, 52),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+          minimumSize: const Size(
+            double.infinity,
+            54,
           ),
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(17),
+          ),
+          textStyle: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+
+      textTheme: const TextTheme(
+        bodyLarge: TextStyle(
+          color: textDark,
+        ),
+        bodyMedium: TextStyle(
+          color: textMuted,
+        ),
+        titleLarge: TextStyle(
+          color: textDark,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );
