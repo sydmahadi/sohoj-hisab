@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import 'date_calculator_screen.dart';
 import 'calculator_screen.dart';
+import 'time_sum_screen.dart';
 import 'daily_average_screen.dart';
 import 'monthly_average_screen.dart';
 import 'browser_screen.dart';
@@ -100,27 +101,7 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 14),
 
               // =========================
-              // ১. তারিখ হিসাব
-              // =========================
-              _MenuCard(
-                icon: Icons.event_available_rounded,
-                title: 'তারিখ হিসাব',
-                subtitle: 'কত দিন আগে কোন তারিখ ছিল জানুন',
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          const DateCalculatorScreen(),
-                    ),
-                  );
-                },
-              ),
-
-              const SizedBox(height: 12),
-
-              // =========================
-              // ২. সাধারণ ক্যালকুলেটর
+              // ১. সাধারণ ক্যালকুলেটর
               // =========================
               _MenuCard(
                 icon: Icons.calculate_rounded,
@@ -140,7 +121,47 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 12),
 
               // =========================
-              // ৩. দৈনিক গড়
+              // ২. তারিখ হিসাব
+              // =========================
+              _MenuCard(
+                icon: Icons.event_available_rounded,
+                title: 'তারিখ হিসাব',
+                subtitle: 'কত দিন আগে কোন তারিখ ছিল জানুন',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          const DateCalculatorScreen(),
+                    ),
+                  );
+                },
+              ),
+
+              const SizedBox(height: 12),
+
+              // =========================
+              // ৩. সময় যোগ
+              // =========================
+              _MenuCard(
+                icon: Icons.access_time_rounded,
+                title: 'সময় যোগ',
+                subtitle: '১.৩০, ২.৫০ এভাবে সময় যোগ করুন',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          const TimeSumScreen(),
+                    ),
+                  );
+                },
+              ),
+
+              const SizedBox(height: 12),
+
+              // =========================
+              // ৪. দৈনিক গড়
               // =========================
               _MenuCard(
                 icon: Icons.today_rounded,
@@ -160,7 +181,7 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 12),
 
               // =========================
-              // ৪. মাসিক গড়
+              // ৫. মাসিক গড়
               // =========================
               _MenuCard(
                 icon: Icons.calendar_month_rounded,
@@ -180,7 +201,7 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 12),
 
               // =========================
-              // ৫. ব্রাউজার
+              // ৬. ব্রাউজার
               // =========================
               _MenuCard(
                 icon: Icons.language_rounded,
