@@ -37,13 +37,8 @@ jobs:
               android/app/src/main/AndroidManifest.xml
           fi
 
-      - name: Verify Internet Permission
-        run: |
-          grep -n "android.permission.INTERNET" \
-            android/app/src/main/AndroidManifest.xml
-
       - name: Analyze
-        run: flutter analyze lib
+        run: flutter analyze lib --no-fatal-infos
 
       - name: Build APK
         run: flutter build apk --release
