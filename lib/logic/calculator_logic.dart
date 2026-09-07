@@ -1,5 +1,37 @@
 class CalculatorLogic {
-  /// মিনিটকে সুন্দরভাবে ঘণ্টা ও মিনিটে দেখায়।
+  /// ঘণ্টা.মিনিট ফরম্যাটকে মোট মিনিটে রূপান্তর করে।
+  ///
+  /// যেমন:
+  /// 200.20 = 200 ঘণ্টা 20 মিনিট
+  /// 345.10 = 345 ঘণ্টা 10 মিনিট
+  static int parseTimeToMinutes(String value) {
+    value = value.trim();
+
+    if (value.isEmpty) {
+      return 0;
+    }
+
+    final parts = value.split('.');
+
+    if (parts.length != 2) {
+      return -1;
+    }
+
+    final hours = int.tryParse(parts[0]);
+    final minutes = int.tryParse(parts[1]);
+
+    if (hours == null || minutes == null) {
+      return -1;
+    }
+
+    if (hours < 0 || minutes < 0 || minutes > 59) {
+      return -1;
+    }
+
+    return (hours * 60) + minutes;
+  }
+
+  /// মোট মিনিটকে ঘণ্টা ও মিনিটে দেখায়।
   static String formatHoursAndMinutes(double totalMinutes) {
     int total = totalMinutes.round();
 
@@ -7,8 +39,12 @@ class CalculatorLogic {
       total = 0;
     }
 
-    final int hours = total ~/ 60;
-    final int minutes = total % 60;
+    final hours = total ~/ 60;
+    final minutes = total % 60;
+
+    if (hours == 0 && minutes == 0) {
+      return '০ ঘণ্টা ০ মিনিট';
+    }
 
     if (hours == 0) {
       return '$minutes মিনিট';
@@ -34,32 +70,36 @@ class CalculatorLogic {
       return 'সঠিক সংখ্যা ইনপুট দিন';
     }
 
-    final double result = value / days;
+    final result = value / days;
 
     return result.toStringAsFixed(2);
   }
 
   /// দৈনিক গড় - সময়
-  static String dailyTimeInMinutes({
+  ///
+  /// সময় অবশ্যই ঘণ্টা.মিনিট ফরম্যাটে হবে।
+  static String dailyTime({
     required double days,
-    required double totalMinutes,
+    required String time,
   }) {
     if (days <= 0) {
       return 'সঠিক দিন ইনপুট দিন';
     }
 
+    final totalMinutes = parseTimeToMinutes(time);
+
     if (totalMinutes < 0) {
-      return 'সঠিক সময় ইনপুট দিন';
+      return 'সময় সঠিকভাবে লিখুন';
     }
 
-    final double result = totalMinutes / days;
+    final dailyAverage = totalMinutes / days;
 
-    return formatHoursAndMinutes(result);
+    return formatHoursAndMinutes(dailyAverage);
   }
 
   /// মাসিক গড় - সংখ্যা
   ///
-  /// মাসকে নির্দিষ্টভাবে ৩০ দিন ধরা হয়েছে।
+  /// মাসকে ৩০ দিন ধরা হয়েছে।
   static String monthlyCount({
     required double days,
     required double value,
@@ -72,40 +112,37 @@ class CalculatorLogic {
       return 'সঠিক সংখ্যা ইনপুট দিন';
     }
 
-    const double monthDays = 30.0;
+    const monthDays = 30.0;
 
-    final double dailyAverage = value / days;
-    final double monthlyAverage =
-        dailyAverage * monthDays;
+    final dailyAverage = value / days;
+    final monthlyAverage = dailyAverage * monthDays;
 
     return monthlyAverage.toStringAsFixed(2);
   }
 
   /// মাসিক গড় - সময়
   ///
-  /// মাসকে নির্দিষ্টভাবে ৩০ দিন ধরা হয়েছে।
+  /// সময় অবশ্যই ঘণ্টা.মিনিট ফরম্যাটে হবে।
+  /// যেমন 200.20 = ২০০ ঘণ্টা ২০ মিনিট।
   static String monthlyTime({
     required double days,
-    required double totalMinutes,
+    required String time,
   }) {
     if (days <= 0) {
       return 'সঠিক দিন ইনপুট দিন';
     }
 
+    final totalMinutes = parseTimeToMinutes(time);
+
     if (totalMinutes < 0) {
-      return 'সঠিক সময় ইনপুট দিন';
+      return 'সময় সঠিকভাবে লিখুন';
     }
 
-    const double monthDays = 30.0;
+    const monthDays = 30.0;
 
-    final double dailyAverage =
-        totalMinutes / days;
+    final dailyAverage = totalMinutes / days;
+    final monthlyAverage = dailyAverage * monthDays;
 
-    final double monthlyAverage =
-        dailyAverage * monthDays;
-
-    return formatHoursAndMinutes(
-      monthlyAverage,
-    );
+    return formatHoursAndMinutes(monthlyAverage);
   }
 }
