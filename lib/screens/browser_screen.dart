@@ -13,61 +13,69 @@ class _BrowserScreenState extends State<BrowserScreen> {
 
   final TextEditingController urlController =
       TextEditingController(
-    text: 'https://www.google.com',
+    text: 'https://www.google.com/',
   );
 
-  bool isLoading = true;
   int loadingProgress = 0;
+  String? errorMessage;
+  bool isRetrying = false;
 
   @override
   void initState() {
     super.initState();
 
     controller = WebViewController()
-      ..setJavaScriptMode(
-        JavaScriptMode.unrestricted,
-      )
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(Colors.white)
       ..setNavigationDelegate(
         NavigationDelegate(
-          onPageStarted: (String url) {
-            if (!mounted) return;
-
-            setState(() {
-              isLoading = true;
-              loadingProgress = 0;
-              urlController.text = url;
-            });
+          onProgress: (progress) {
+            if (mounted) {
+              setState(() {
+                loadingProgress = progress;
+                if (progress > 20) {
+                  errorMessage = null;
+                }
+              });
+            }
           },
 
-          onProgress: (int progress) {
-            if (!mounted) return;
-
-            setState(() {
-              loadingProgress = progress;
-            });
+          onPageStarted: (url) {
+            if (mounted) {
+              setState(() {
+                loadingProgress = 0;
+                errorMessage = null;
+              });
+            }
           },
 
-          onPageFinished: (String url) {
-            if (!mounted) return;
-
-            setState(() {
-              isLoading = false;
-              loadingProgress = 100;
-              urlController.text = url;
-            });
+          onPageFinished: (url) {
+            if (mounted) {
+              setState(() {
+                loadingProgress = 100;
+              });
+            }
           },
 
-          onWebResourceError: (WebResourceError error) {
+          onWebResourceError: (error) {
             if (!mounted) return;
 
-            setState(() {
-              isLoading = false;
-            });
+            // Main frame-এর error হলে শুধু error দেখাব।
+            if (error.isForMainFrame ?? true) {
+              setState(() {
+                errorMessage =
+                    '${error.errorCode}: ${error.description}';
+              });
+            }
+          },
+
+          onNavigationRequest: (request) {
+            return NavigationDecision.navigate;
           },
         ),
       )
       ..loadRequest(
-        Uri.parse('https://www.google.com'),
+        Uri.parse('https://www.google.com/'),
       );
   }
 
@@ -77,7 +85,7 @@ class _BrowserScreenState extends State<BrowserScreen> {
     super.dispose();
   }
 
-  void openWebsite() {
+  Future<void> openWebsite() async {
     String url = urlController.text.trim();
 
     if (url.isEmpty) return;
@@ -87,9 +95,41 @@ class _BrowserScreenState extends State<BrowserScreen> {
       url = 'https://$url';
     }
 
-    controller.loadRequest(
-      Uri.parse(url),
-    );
+    final uri = Uri.tryParse(url);
+
+    if (uri == null || uri.host.isEmpty) {
+      setState(() {
+        errorMessage = 'সঠিক ওয়েবসাইট ঠিকানা দিন।';
+      });
+      return;
+    }
+
+    FocusScope.of(context).unfocus();
+
+    setState(() {
+      errorMessage = null;
+      loadingProgress = 0;
+    });
+
+    await controller.loadRequest(uri);
+  }
+
+  Future<void> reloadPage() async {
+    setState(() {
+      errorMessage = null;
+      loadingProgress = 0;
+      isRetrying = true;
+    });
+
+    try {
+      await controller.reload();
+    } finally {
+      if (mounted) {
+        setState(() {
+          isRetrying = false;
+        });
+      }
+    }
   }
 
   Future<void> handleBack() async {
@@ -106,22 +146,22 @@ class _BrowserScreenState extends State<BrowserScreen> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
-
         handleBack();
       },
-
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('ব্রাউজার'),
-
+          centerTitle: true,
+          title: const Text(
+            'ব্রাউজার',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           actions: [
             IconButton(
-              onPressed: () {
-                controller.reload();
-              },
+              onPressed: isRetrying ? null : reloadPage,
               icon: const Icon(Icons.refresh),
               tooltip: 'রিফ্রেশ',
             ),
@@ -130,57 +170,101 @@ class _BrowserScreenState extends State<BrowserScreen> {
 
         body: Column(
           children: [
-
-            // =========================
-            // URL Bar
-            // =========================
+            // URL Box
             Padding(
-              padding: const EdgeInsets.all(10),
-
+              padding: const EdgeInsets.fromLTRB(
+                12,
+                12,
+                12,
+                8,
+              ),
               child: TextField(
                 controller: urlController,
-
                 keyboardType: TextInputType.url,
-
                 textInputAction: TextInputAction.go,
-
                 onSubmitted: (_) {
                   openWebsite();
                 },
-
                 decoration: InputDecoration(
                   hintText: 'ওয়েবসাইট লিখুন',
-
                   prefixIcon: const Icon(
-                    Icons.language,
+                    Icons.language_rounded,
                   ),
-
                   suffixIcon: IconButton(
                     onPressed: openWebsite,
                     icon: const Icon(
-                      Icons.arrow_forward,
+                      Icons.arrow_forward_rounded,
                     ),
                   ),
                 ),
               ),
             ),
 
-            // =========================
-            // Loading Progress
-            // =========================
-            if (isLoading)
+            // Loading bar
+            if (loadingProgress > 0 &&
+                loadingProgress < 100)
               LinearProgressIndicator(
-                value: loadingProgress > 0
-                    ? loadingProgress / 100
-                    : null,
+                value: loadingProgress / 100,
+                minHeight: 2,
               ),
 
-            // =========================
             // WebView
-            // =========================
             Expanded(
-              child: WebViewWidget(
-                controller: controller,
+              child: Stack(
+                children: [
+                  WebViewWidget(
+                    controller: controller,
+                  ),
+
+                  // Error message
+                  if (errorMessage != null)
+                    Positioned.fill(
+                      child: Container(
+                        color: Colors.white,
+                        padding: const EdgeInsets.all(24),
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.wifi_off_rounded,
+                                size: 60,
+                                color: Color(0xFF14532D),
+                              ),
+                              const SizedBox(height: 16),
+                              const Text(
+                                'ওয়েব পেজ লোড করা যায়নি',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 21,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                errorMessage!,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              ElevatedButton.icon(
+                                onPressed: reloadPage,
+                                icon: const Icon(
+                                  Icons.refresh,
+                                ),
+                                label: const Text(
+                                  'আবার চেষ্টা করুন',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
           ],
