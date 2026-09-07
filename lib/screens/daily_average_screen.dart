@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../logic/calculator_logic.dart';
 import '../models/calculator_model.dart';
-import '../theme/app_theme.dart';
 
 class DailyAverageScreen extends StatefulWidget {
   const DailyAverageScreen({super.key});
@@ -14,11 +13,13 @@ class DailyAverageScreen extends StatefulWidget {
 
 class _DailyAverageScreenState
     extends State<DailyAverageScreen> {
-  final daysController = TextEditingController();
-  final valueController = TextEditingController();
+  AverageType selectedType = AverageType.count;
 
-  AverageType type = AverageType.count;
-  TimeUnit timeUnit = TimeUnit.minutes;
+  final TextEditingController daysController =
+      TextEditingController();
+
+  final TextEditingController valueController =
+      TextEditingController();
 
   String result = '';
 
@@ -30,247 +31,212 @@ class _DailyAverageScreenState
   }
 
   void calculate() {
-    final double? days =
-        double.tryParse(daysController.text.trim());
+    final days = double.tryParse(
+      daysController.text.trim(),
+    );
 
-    final double? value =
-        double.tryParse(valueController.text.trim());
-
-    if (days == null || value == null || days <= 0 || value < 0) {
+    if (days == null || days <= 0) {
       setState(() {
-        result = 'সব তথ্য সঠিকভাবে পূরণ করুন';
+        result = 'সঠিক দিন ইনপুট দিন';
       });
       return;
     }
 
-    if (type == AverageType.count) {
-      final answer = CalculatorLogic.dailyCount(
-        days: days,
-        value: value,
+    if (selectedType == AverageType.count) {
+      final value = double.tryParse(
+        valueController.text.trim(),
       );
 
+      if (value == null || value < 0) {
+        setState(() {
+          result = 'সঠিক সংখ্যা ইনপুট দিন';
+        });
+        return;
+      }
+
       setState(() {
-        result = '$answer বার';
+        result = CalculatorLogic.dailyCount(
+          days: days,
+          value: value,
+        );
       });
     } else {
-      final double totalMinutes =
-          timeUnit == TimeUnit.hours
-              ? value * 60
-              : value;
-
-      final answer = CalculatorLogic.dailyTimeInMinutes(
-        days: days,
-        totalMinutes: totalMinutes,
-      );
-
       setState(() {
-        result = answer;
+        result = CalculatorLogic.dailyTime(
+          days: days,
+          time: valueController.text,
+        );
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isCount = selectedType == AverageType.count;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('দৈনিক গড়'),
+        centerTitle: true,
+        title: const Text(
+          'দৈনিক গড়',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
 
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-
-            Container(
-              padding: const EdgeInsets.all(16),
-
-              decoration: BoxDecoration(
-                color: AppTheme.gold.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(18),
-              ),
-
-              child: const Row(
-                children: [
-                  Icon(
-                    Icons.info_outline,
-                    color: AppTheme.gold,
-                  ),
-
-                  SizedBox(width: 10),
-
-                  Expanded(
-                    child: Text(
-                      'আপনার মোট হিসাবকে দিনের সংখ্যা দিয়ে ভাগ করে দৈনিক গড় বের করা হবে।',
-                      style: TextStyle(
-                        color: AppTheme.textDark,
-                        fontSize: 13,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            SegmentedButton<AverageType>(
-              segments: const [
-                ButtonSegment(
-                  value: AverageType.count,
-                  label: Text('সংখ্যা'),
-                  icon: Icon(Icons.numbers),
-                ),
-                ButtonSegment(
-                  value: AverageType.time,
-                  label: Text('সময়'),
-                  icon: Icon(Icons.schedule),
-                ),
-              ],
-
-              selected: {type},
-
-              onSelectionChanged: (value) {
-                setState(() {
-                  type = value.first;
-                  result = '';
-                });
-              },
-            ),
-
-            const SizedBox(height: 25),
-
-            TextField(
-              controller: daysController,
-              keyboardType:
-                  const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-
-              decoration: const InputDecoration(
-                labelText: 'কয় দিনের হিসাব?',
-                hintText: 'যেমন: ৫',
-                prefixIcon: Icon(
-                  Icons.calendar_today,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 15),
-
-            if (type == AverageType.time)
-              DropdownButtonFormField<TimeUnit>(
-                initialValue: timeUnit,
-
-                decoration: const InputDecoration(
-                  labelText: 'সময় একক',
-                  prefixIcon: Icon(Icons.timer),
-                ),
-
-                items: const [
-                  DropdownMenuItem(
-                    value: TimeUnit.minutes,
-                    child: Text('মিনিট'),
-                  ),
-                  DropdownMenuItem(
-                    value: TimeUnit.hours,
-                    child: Text('ঘণ্টা'),
-                  ),
-                ],
-
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() {
-                      timeUnit = value;
-                      result = '';
-                    });
-                  }
-                },
-              ),
-
-            if (type == AverageType.time)
-              const SizedBox(height: 15),
-
-            TextField(
-              controller: valueController,
-
-              keyboardType:
-                  const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-
-              decoration: InputDecoration(
-                labelText: type == AverageType.count
-                    ? 'মোট সংখ্যা'
-                    : 'মোট সময়',
-
-                hintText: type == AverageType.count
-                    ? 'যেমন: ৪৫'
-                    : 'যেমন: ২০০',
-
-                prefixIcon: Icon(
-                  type == AverageType.count
-                      ? Icons.numbers
-                      : Icons.timer,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 25),
-
-            ElevatedButton.icon(
-              onPressed: calculate,
-
-              icon: const Icon(Icons.calculate),
-
-              label: const Text(
-                'দৈনিক হিসাব করুন',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 25),
-
-            if (result.isNotEmpty)
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(18),
+          child: Column(
+            crossAxisAlignment:
+                CrossAxisAlignment.stretch,
+            children: [
               Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(24),
-
+                padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: AppTheme.primary,
+                  color: const Color(0xFFE8F0EA),
                   borderRadius: BorderRadius.circular(22),
                 ),
-
-                child: Column(
+                child: const Column(
                   children: [
-                    const Text(
-                      'দৈনিক গড়',
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 15,
-                      ),
+                    Icon(
+                      Icons.today_rounded,
+                      size: 48,
+                      color: Color(0xFF14532D),
                     ),
-
-                    const SizedBox(height: 8),
-
+                    SizedBox(height: 10),
                     Text(
-                      result,
-                      textAlign: TextAlign.center,
-
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 27,
+                      'দৈনিক গড় হিসাব',
+                      style: TextStyle(
+                        fontSize: 21,
                         fontWeight: FontWeight.bold,
+                        color: Color(0xFF183329),
                       ),
                     ),
                   ],
                 ),
               ),
-          ],
+
+              const SizedBox(height: 20),
+
+              SegmentedButton<AverageType>(
+                segments: const [
+                  ButtonSegment<AverageType>(
+                    value: AverageType.count,
+                    label: Text('সংখ্যা'),
+                    icon: Icon(
+                      Icons.numbers_rounded,
+                    ),
+                  ),
+                  ButtonSegment<AverageType>(
+                    value: AverageType.time,
+                    label: Text('সময়'),
+                    icon: Icon(
+                      Icons.access_time_rounded,
+                    ),
+                  ),
+                ],
+                selected: {selectedType},
+                onSelectionChanged: (value) {
+                  setState(() {
+                    selectedType = value.first;
+                    result = '';
+                    valueController.clear();
+                  });
+                },
+              ),
+
+              const SizedBox(height: 20),
+
+              TextField(
+                controller: daysController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'কত দিনের হিসাব?',
+                  hintText: 'যেমন: 10',
+                  prefixIcon: Icon(
+                    Icons.calendar_today_rounded,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 15),
+
+              TextField(
+                controller: valueController,
+                keyboardType: TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                decoration: InputDecoration(
+                  labelText: isCount
+                      ? 'মোট সংখ্যা'
+                      : 'মোট সময়',
+                  hintText: isCount
+                      ? 'যেমন: 500'
+                      : 'যেমন: 200.20',
+                  prefixIcon: Icon(
+                    isCount
+                        ? Icons.numbers_rounded
+                        : Icons.schedule_rounded,
+                  ),
+                  helperText: isCount
+                      ? null
+                      : 'ঘণ্টা.মিনিট লিখুন — 200.20 = ২০০ ঘণ্টা ২০ মিনিট',
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              ElevatedButton.icon(
+                onPressed: calculate,
+                icon: const Icon(
+                  Icons.calculate_rounded,
+                ),
+                label: const Text(
+                  'গড় হিসাব করুন',
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+
+              if (result.isNotEmpty) ...[
+                const SizedBox(height: 25),
+
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF14532D),
+                    borderRadius: BorderRadius.circular(22),
+                  ),
+                  child: Column(
+                    children: [
+                      const Text(
+                        'দৈনিক গড়',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 17,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        result,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ],
+          ),
         ),
       ),
     );
