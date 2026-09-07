@@ -5,19 +5,19 @@ class BrowserScreen extends StatefulWidget {
   const BrowserScreen({super.key});
 
   @override
-  State<BrowserScreen> createState() =>
-      _BrowserScreenState();
+  State<BrowserScreen> createState() => _BrowserScreenState();
 }
 
-class _BrowserScreenState
-    extends State<BrowserScreen> {
-
+class _BrowserScreenState extends State<BrowserScreen> {
   late final WebViewController controller;
 
   final TextEditingController urlController =
       TextEditingController(
     text: 'https://www.google.com',
   );
+
+  bool isLoading = true;
+  int loadingProgress = 0;
 
   @override
   void initState() {
@@ -26,6 +26,37 @@ class _BrowserScreenState
     controller = WebViewController()
       ..setJavaScriptMode(
         JavaScriptMode.unrestricted,
+      )
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageStarted: (String url) {
+            setState(() {
+              isLoading = true;
+              loadingProgress = 0;
+              urlController.text = url;
+            });
+          },
+
+          onProgress: (int progress) {
+            setState(() {
+              loadingProgress = progress;
+            });
+          },
+
+          onPageFinished: (String url) {
+            setState(() {
+              isLoading = false;
+              loadingProgress = 100;
+              urlController.text = url;
+            });
+          },
+
+          onWebResourceError: (WebResourceError error) {
+            setState(() {
+              isLoading = false;
+            });
+          },
+        ),
       )
       ..loadRequest(
         Uri.parse('https://www.google.com'),
@@ -53,69 +84,92 @@ class _BrowserScreenState
     );
   }
 
+  Future<bool> handleBack() async {
+    if (await controller.canGoBack()) {
+      await controller.goBack();
+      return false;
+    }
+
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('ব্রাউজার'),
+    return WillPopScope(
+      onWillPop: handleBack,
 
-        actions: [
-          IconButton(
-            onPressed: () {
-              controller.reload();
-            },
-            icon: const Icon(Icons.refresh),
-          ),
-        ],
-      ),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('ব্রাউজার'),
 
-      body: Column(
-        children: [
+          actions: [
+            IconButton(
+              onPressed: () {
+                controller.reload();
+              },
+              icon: const Icon(Icons.refresh),
+              tooltip: 'রিফ্রেশ',
+            ),
+          ],
+        ),
 
-          Padding(
-            padding: const EdgeInsets.all(10),
+        body: Column(
+          children: [
 
-            child: Row(
-              children: [
+            // =========================
+            // URL Bar
+            // =========================
+            Padding(
+              padding: const EdgeInsets.all(10),
 
-                Expanded(
-                  child: TextField(
-                    controller: urlController,
+              child: TextField(
+                controller: urlController,
 
-                    keyboardType:
-                        TextInputType.url,
+                keyboardType: TextInputType.url,
 
-                    textInputAction:
-                        TextInputAction.go,
+                textInputAction: TextInputAction.go,
 
-                    onSubmitted: (_) {
-                      openWebsite();
-                    },
+                onSubmitted: (_) {
+                  openWebsite();
+                },
 
-                    decoration: InputDecoration(
-                      hintText: 'ওয়েবসাইট লিখুন',
-                      prefixIcon:
-                          const Icon(Icons.language),
+                decoration: InputDecoration(
+                  hintText: 'ওয়েবসাইট লিখুন',
 
-                      suffixIcon: IconButton(
-                        onPressed: openWebsite,
-                        icon: const Icon(
-                          Icons.arrow_forward,
-                        ),
-                      ),
+                  prefixIcon: const Icon(
+                    Icons.language,
+                  ),
+
+                  suffixIcon: IconButton(
+                    onPressed: openWebsite,
+                    icon: const Icon(
+                      Icons.arrow_forward,
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
 
-          Expanded(
-            child: WebViewWidget(
-              controller: controller,
+            // =========================
+            // Loading Progress
+            // =========================
+            if (isLoading)
+              LinearProgressIndicator(
+                value: loadingProgress > 0
+                    ? loadingProgress / 100
+                    : null,
+              ),
+
+            // =========================
+            // WebView
+            // =========================
+            Expanded(
+              child: WebViewWidget(
+                controller: controller,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
