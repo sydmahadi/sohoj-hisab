@@ -1,7 +1,6 @@
 name: shohoj_hisab
-description: "সহজ হিসাব - দৈনিক ও মাসিক গড় ক্যালকুলেটর"
+description: "সহজ হিসাব - দৈনিক ও মাসিক গড় ক্যালকুলেটর"
 publish_to: 'none'
-
 version: 1.0.0+1
 
 environment:
@@ -18,7 +17,15 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+
+  flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "icon.png"
+  adaptive_icon_background: "#06130F"
+  adaptive_icon_foreground: "icon.png"
 
 flutter:
   uses-material-design: true
